@@ -8,5 +8,6 @@ readme = "README.md"
 repository = "https://github.com/AdamFrenzen/ghostd"
 keywords = ["llm", "neovim", "ghostwrite", "daemon"]
 categories = ["command-line-utilities", "development-tools"]
+build = "build.rs"
 
 [dependencies]
