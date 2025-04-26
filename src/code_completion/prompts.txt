@@ -1,0 +1,183 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(128, 10)
+
+    def forward(self, x):
+        return self.linear(x)
+
+model = MyModel()
+optimizer = optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+
+train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# training loop
+for epoch in range(
+===
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import torchvision.transforms as transforms
+import numpy as np
+
+# check for GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# define a simple feedforward model
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Linear(128, 256),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, 10)
+        )
+
+    def forward(self, x):
+        return self.network(x)
+
+# initialize model, optimizer, and loss
+model = MyModel().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+criterion = nn.CrossEntropyLoss()
+
+# dummy dataset for demonstration
+X = torch.randn(1000, 128)
+y = torch.randint(0, 10, (1000,))
+dataset = TensorDataset(X, y)
+
+train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# training loop
+for epoch in range(
+===
+for epoch in range(
+===
+### the user is creating a loop for training
+### the user will likely want to use the `number_of_epochs` integer variable
+for epoch in range(
+===
+# user is initializing training loop
+# using variable number_of_epochs
+for epoch in range(
+===
+# initializing training loop
+# using variable number_of_epochs
+for epoch in range(
+===
+# initializing training loop
+# use variable number_of_epochs
+for epoch in range(
+===
+# training loop for `number_of_epochs`
+for epoch in range(
+===
+# Train the model for multiple epochs using `number_of_epochs`
+for epoch in range(
+===
+# Train the model for multiple epochs using `number_of_epochs`
+number_of_epochs = 10
+for epoch in range(
+===
+!!!SEPARATOR!!!
+===
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(128, 10)
+
+    def forward(self, x):
+        return self.linear(x)
+
+model = MyModel()
+optimizer = optim.Adam(model.parameters())
+criterion = nn.CrossEntropyLoss()
+
+train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# training loop
+for epoch in range(
+===
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, TensorDataset
+import torchvision.transforms as transforms
+import numpy as np
+
+# check for GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# define a simple feedforward model
+class MyModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Linear(128, 256),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, 10)
+        )
+
+    def forward(self, x):
+        return self.network(x)
+
+# initialize model, optimizer, and loss
+model = MyModel().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+criterion = nn.CrossEntropyLoss()
+
+# dummy dataset for demonstration
+X = torch.randn(1000, 128)
+y = torch.randint(0, 10, (1000,))
+dataset = TensorDataset(X, y)
+
+train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# training loop
+for epoch in range(
+===
+for epoch in range(
+===
+### the user is creating a loop for training
+### the user will likely want to use the `number_of_epochs` integer variable
+for epoch in range(
+===
+# user is initializing training loop
+# using variable number_of_epochs
+for epoch in range(
+===
+# initializing training loop
+# using variable number_of_epochs
+for epoch in range(
+===
+# initializing training loop
+# use variable number_of_epochs
+for epoch in range(
+===
+# training loop for `number_of_epochs`
+for epoch in range(
+===
+# Train the model for multiple epochs using `number_of_epochs`
+for epoch in range(
+===
+# Train the model for multiple epochs using `number_of_epochs`
+number_of_epochs = 10
+for epoch in range(
