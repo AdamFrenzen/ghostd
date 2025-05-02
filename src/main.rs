@@ -2,13 +2,19 @@ mod agents;
 mod client;
 mod code_completion;
 mod server;
+mod websocket;
 
 use reqwest::Client;
+use tokio::net::TcpListener;
+use tokio_tungstenite::accept_async;
 
 // use client::chat::send_chat_prompt;
 use client::completion::send_completion_prompt;
 use client::types::{LlamaParams, LlamaResponse, Message};
 use server::{start_server, stop_server};
+
+use websocket::messages::InboundMessage;
+use websocket::server::WebSocketSession;
 
 use agents::chat::ChatAgent;
 use client::chat::{ChatClient, ChatResponse};
@@ -17,18 +23,42 @@ use code_completion::prompts::get_prompts_from_file;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let prompts = get_prompts_from_file()?;
+    let websocket_port = "64057";
+    let address = format!("127.0.0.1:{}", websocket_port);
 
-    let port = "64057";
-    // let model_path = "./models/qwen2.5-coder-3b-instruct-q4_k_m.gguf";
-    let model_path = "./models/mistral-7b-instruct-v0.2-q4_k_m.gguf";
+    let listener = TcpListener::bind(&address).await?;
+    println!("WebSocket server listening on ws://{}", address);
 
-    let server = start_server(model_path, port).await?;
-    println!("✅ Server started");
+    let (stream, _) = listener.accept().await?;
+    let ws_stream = accept_async(stream).await?;
 
-    let client = Client::new();
-    let chat_client = ChatClient::new(port, client);
-    let chat_agent = ChatAgent::new(chat_client);
+    println!("WebSocket connected");
+    let websocket_session = WebSocketSession::new(ws_stream).await?;
+
+    let demo_message = InboundMessage::UserPrompt {
+        prompt: "test".to_string(),
+    };
+    websocket_session.send(demo_message).await?;
+
+    tokio::signal::ctrl_c().await?;
+    println!("Shutting down gracefully.");
+
+    ///////////////////////////////
+    ///////////////////////////////
+    ////////
+    // let prompts = get_prompts_from_file()?;
+    //
+    // let port = "64058";
+    // // let model_path = "./models/qwen2.5-coder-3b-instruct-q4_k_m.gguf";
+    // let model_path = "./models/mistral-7b-instruct-v0.2-q4_k_m.gguf";
+    //
+    // let server = start_server(model_path, port).await?;
+    // println!("✅ Server started");
+    //
+    // let client = Client::new();
+    // let chat_client = ChatClient::new(port, client);
+    // let chat_agent = ChatAgent::new(chat_client);
+    ////////
 
     // let response = chat_agent.send("what is the meaning of life?").await?;
     // response.print();
@@ -38,10 +68,10 @@ async fn main() -> anyhow::Result<()> {
     //     .await?
     //     .print();
 
-    chat_agent
-        .send("How should i have my Rust backend stream the llama.cpp responses to my Lua Neovim frontend? When I enable the stream how should that communication work?")
-        .await?
-        .print();
+    // chat_agent
+    //     .send("How should i have my Rust backend stream the llama.cpp responses to my Lua Neovim frontend? When I enable the stream how should that communication work?")
+    //     .await?
+    //     .print();
 
     // match res {
     //     LlamaResponse::Ok(result) => {
@@ -88,8 +118,8 @@ async fn main() -> anyhow::Result<()> {
     //     }
     // }
 
-    stop_server(server).await?;
-    println!("🛑 Server stopped");
+    // stop_server(server).await?;
+    // println!("🛑 Server stopped");
 
     Ok(())
 }

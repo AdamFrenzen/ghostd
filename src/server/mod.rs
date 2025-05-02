@@ -24,10 +24,6 @@ pub async fn start_server(model_path: &str, port: &str) -> anyhow::Result<Child>
                 Ok(res) if res.status().is_success() => {
                     return Ok(());
                 }
-                // Ok(res) if res.status() == 503 => {
-                //     println!("loading: {:?}", res);
-                //     tokio::time::sleep(Duration::from_millis(500)).await;
-                // }
                 _ => {
                     println!("sleep");
                     tokio::time::sleep(Duration::from_millis(500)).await;
