@@ -1,7 +1,7 @@
 mod agents;
 mod client;
 mod code_completion;
-mod server;
+mod llm_backends;
 mod websocket;
 
 use reqwest::Client;
@@ -11,7 +11,7 @@ use tokio_tungstenite::accept_async;
 // use client::chat::send_chat_prompt;
 use client::completion::send_completion_prompt;
 use client::types::{LlamaParams, LlamaResponse, Message};
-use server::{start_server, stop_server};
+use llm_backends::{start_server, stop_server};
 
 use websocket::messages::InboundMessage;
 use websocket::server::WebSocketSession;
