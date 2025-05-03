@@ -2,16 +2,20 @@ mod agents;
 mod client;
 mod code_completion;
 mod llm_backends;
+mod router;
 mod websocket;
 
 use reqwest::Client;
 use tokio::net::TcpListener;
+use tokio::sync::mpsc;
 use tokio_tungstenite::accept_async;
 
 // use client::chat::send_chat_prompt;
 use client::completion::send_completion_prompt;
 use client::types::{LlamaParams, LlamaResponse, Message};
 use llm_backends::{start_server, stop_server};
+
+use router::Router;
 
 use websocket::messages::InboundMessage;
 use websocket::server::WebSocketSession;
@@ -23,6 +27,12 @@ use code_completion::prompts::get_prompts_from_file;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    let (inbound_tx, inbound_rx) = mpsc::channel(32);
+    let (outbound_tx, outbound_rx) = mpsc::channel(32);
+
+    let router = Router::new(inbound_rx, outbound_tx)?;
+    tokio::spawn(router.start());
+
     let websocket_port = "64057";
     let address = format!("127.0.0.1:{}", websocket_port);
 
@@ -33,7 +43,7 @@ async fn main() -> anyhow::Result<()> {
     let ws_stream = accept_async(stream).await?;
 
     println!("WebSocket connected");
-    let websocket_session = WebSocketSession::new(ws_stream).await?;
+    let websocket_session = WebSocketSession::new(ws_stream, inbound_tx, outbound_rx).await?;
 
     let demo_message = InboundMessage::UserPrompt {
         prompt: "test".to_string(),

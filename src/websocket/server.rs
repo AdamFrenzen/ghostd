@@ -15,24 +15,23 @@ use crate::websocket::ws_to_channel;
 pub struct WebSocketSession {
     // model_registry: Arc<ModelRegistry>,
     inbound_tx: mpsc::Sender<InboundMessage>,
-    inbound_rx: mpsc::Receiver<InboundMessage>,
-    outbound_tx: mpsc::Sender<OutboundMessage>,
+    // outbound_rx: mpsc::Receiver<OutboundMessage>,
     // ws_to_channel_task: JoinHandle<anyhow::Result<()>>,
     // channel_to_ws_task: JoinHandle<anyhow::Result<()>>,
 }
 
 impl WebSocketSession {
-    pub async fn new(ws_stream: WebSocketStream<TcpStream>) -> anyhow::Result<Self> {
+    pub async fn new(
+        ws_stream: WebSocketStream<TcpStream>,
+        inbound_tx: mpsc::Sender<InboundMessage>,
+        outbound_rx: mpsc::Receiver<OutboundMessage>,
+    ) -> anyhow::Result<Self> {
         let (ws_writer, ws_reader) = ws_stream.split();
-        // NOTE: these inbound are not used
-        let (inbound_tx, inbound_rx) = mpsc::channel(32);
-
-        let (outbound_tx, outbound_rx) = mpsc::channel(32);
 
         // Task that receives WebSocket messages and forwards them into the internal channel
-        let outbound_tx_clone = outbound_tx.clone();
+        let inbound_tx_clone = inbound_tx.clone();
         let ws_to_channel_task =
-            tokio::spawn(async move { ws_to_channel::start(ws_reader, outbound_tx_clone).await });
+            tokio::spawn(async move { ws_to_channel::start(ws_reader, inbound_tx_clone).await });
 
         // Task that takes internal messages and sends them out to the WebSocket
         let channel_to_ws_task =
@@ -61,8 +60,6 @@ impl WebSocketSession {
         Ok(Self {
             // model_registry,
             inbound_tx,
-            inbound_rx,
-            outbound_tx,
         })
     }
 
