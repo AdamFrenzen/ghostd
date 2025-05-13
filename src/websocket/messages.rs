@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 #[serde(tag = "type")]
 pub enum InboundMessage {
     UserPrompt { prompt: String },
+    Temporary { temp: String },
     // ... more message types here
 }
 

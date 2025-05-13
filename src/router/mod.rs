@@ -21,18 +21,18 @@ impl Router {
 
     pub async fn start(mut self) -> anyhow::Result<()> {
         while let Some(message) = self.inbound_rx.recv().await {
-            let outbound_tx = self.outbound_tx.clone();
-
             match message {
                 InboundMessage::UserPrompt { prompt } => {
                     println!("Received user prompt: {}", prompt);
 
-                    // For now, fake a reply
-                    outbound_tx
+                    self.outbound_tx
                         .send(OutboundMessage::LLMResponse {
                             message: "Hello!!".to_string(),
                         })
                         .await?;
+                }
+                _ => {
+                    println!("Invalid message type received");
                 }
             }
         }
