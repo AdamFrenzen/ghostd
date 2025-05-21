@@ -14,10 +14,7 @@ pub async fn start(
         let json = serde_json::to_string(&outbound)?;
         let bytes = Utf8Bytes::from(json);
 
-        ws_writer
-            .send(Message::Text(bytes))
-            .await
-            .context("failed to send websocket message")?;
+        ws_writer.send(Message::Text(bytes)).await?
     }
 
     Ok(())

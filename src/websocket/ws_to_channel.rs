@@ -16,7 +16,7 @@ pub async fn start(
             println!("recieved: {}", text);
             let inbound: InboundMessage = serde_json::from_str(&text)?;
 
-            tx.send(inbound);
+            tx.send(inbound).await?;
         }
     }
 
